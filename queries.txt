@@ -1,0 +1,79 @@
+Question 1: What do rental trends look like in categories that are considered family movies?
+
+/*Query 1 - query used for first insight/*
+SELECT f.title film_title,
+       c.name category_name,
+       COUNT(r.rental_id) rental_count
+FROM category c
+JOIN film_category fc
+ON c.category_id = fc.category_id
+JOIN film f
+ON f.film_id = fc.film_id
+JOIN inventory i
+ON f.film_id = i.film_id
+JOIN rental r
+ON r.inventory_id = i.inventory_id
+WHERE c.name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music')
+GROUP BY 1,2
+ORDER BY 2,1;
+
+
+
+Question 2: How does the length of rental duration for family-friendly movies compare to the duration that all movies are rented for?
+
+/*Query 2 - query used for second insight/*
+SELECT f.title,
+       c.name,
+       f.rental_duration,
+       NTILE(4) OVER (ORDER BY f.rental_duration) AS standard_quartile
+FROM film_category fc
+JOIN category c
+ON c.category_id = fc.category_id
+JOIN film f
+ON f.film_id = fc.film_id
+WHERE c.name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music')
+ORDER BY 3;
+
+
+
+Question 3: How do the two stores compare in their count of rental orders during every month for all years of data recorded?
+
+/*Query 3 - query used for third insight/*
+SELECT DATE_PART('month', r1.rental_date) AS rental_month,
+       DATE_PART('year', r1.rental_date) AS rental_year,
+       ('Store ' || s1.store_id) AS store,
+       COUNT(*) AS count_rentals
+FROM store AS s1
+JOIN staff AS s2
+ON s1.store_id = s2.store_id
+JOIN rental r1
+ON s2.staff_id = r1.staff_id
+GROUP BY 1, 2, 3
+ORDER BY 2, 1;
+
+
+
+Question 4: What was the amount of payments provided on a monthly basis during 2007 by the top 10 customers?
+
+/*Query 4 - query used for fourth insight/*
+SELECT c.first_name || ' ' || c.last_name AS full_name,
+       DATE_TRUNC('month', p.payment_date) pay_month_yr,
+       COUNT(p.amount) AS pay_per_month,
+       SUM(p.amount) AS pay_amount
+FROM customer c
+JOIN payment p
+ON c.customer_id = p.customer_id
+WHERE c.first_name || ' ' || c.last_name IN
+        (SELECT t1.full_name
+         FROM
+            (SELECT c.first_name || ' ' || c.last_name AS full_name,
+                    SUM(p.amount) AS pay_amount
+             FROM customer c
+             JOIN payment p
+             ON p.customer_id = c.customer_id
+             GROUP BY 1
+             ORDER BY 2 DESC
+             LIMIT 10) t1)
+        AND (p.payment_date BETWEEN '2007-01-01' AND '2008-01-01')
+GROUP BY 1,2
+ORDER BY 1,2,3;

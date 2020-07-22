@@ -1,4 +1,4 @@
-# Investigate_Relational_Database
+# Investigating a Relational Database
 ## Using SQL to Explore a Database Related to Movie Rentals
 This code runs SQL queries using movie rental information from the Sakila Database to gain an understanding of customer behaviors. The written queries display movie watching patterns across customer groups, payment earnings, and store performance. Key takeaways from the analyses can be found in a presentation of slides in this repo titled 'report.pdf'.
 

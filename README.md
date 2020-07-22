@@ -23,5 +23,6 @@ This code was built and run using the following:
 * What are the most popular films in each country?
 
 ## Credits
-* [Udacity](https://www.udacity.com/course/programming-for-data-science-nanodegree--nd104)
 * [PostgreSQL Sample Database](https://www.postgresqltutorial.com/postgresql-sample-database/)
+* [Sakila Database](https://www.postgresqltutorial.com/postgresql-sample-database/)
+* [Udacity](https://www.udacity.com/course/programming-for-data-science-nanodegree--nd104)
